@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/admiralty">
+    <ImageButton
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/searchBtn"
+        android:src="@drawable/search"
+        android:background="@null"
+        android:scaleType="centerInside"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="false"
+        android:layout_marginLeft="20dp"
+        android:layout_marginBottom="20dp" />
+    <ImageButton
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/listBtn"
+        android:src="@drawable/facility"
+        android:background="@null"
+        android:scaleType="centerInside"
+        android:layout_marginLeft="20dp"
+        android:layout_above="@+id/searchBtn"
+        android:layout_marginBottom="20dp" />
+
+</RelativeLayout>
