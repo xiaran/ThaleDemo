@@ -1,6 +1,7 @@
 package com.thale.summeress.thale.ui;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -129,7 +130,7 @@ public class HomeActivity extends Activity implements View.OnClickListener {
         selected = -1;
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Please choose the desired one");
-        final CharSequence[] choiceList = {
+        final String[] choiceList = {
                 "Tourist Service", "Lost Property Office", "Police Post",
                 "Shop", "Customer Service Centre", "ATM"
         };
@@ -137,6 +138,7 @@ public class HomeActivity extends Activity implements View.OnClickListener {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 selected = which;
+                Log.i(TAG, ""+selected);
             }
         }).setPositiveButton("OK",
                 new DialogInterface.OnClickListener() {
@@ -144,6 +146,10 @@ public class HomeActivity extends Activity implements View.OnClickListener {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                         Intent intent = new Intent(HomeActivity.this, InnerStationActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putString("Activity", "Home");
+                        bundle.putString("Facility", String.valueOf(selected)+choiceList[selected]);
+                        intent.putExtras(bundle);
                         startActivity(intent);
                     }
                 }).setNegativeButton("Cancel",
@@ -181,6 +187,7 @@ public class HomeActivity extends Activity implements View.OnClickListener {
         Bundle bundle = new Bundle();
         bundle.putString("Activity","Home");
         serviceIntent.putExtras(bundle);
+        startService(serviceIntent);
     }
 
     @Override
@@ -193,9 +200,15 @@ public class HomeActivity extends Activity implements View.OnClickListener {
     protected void onResume() {
         Log.d(TAG, "onResume");
         super.onResume();
-        serviceIntent = new Intent(this, LocationTraceService.class);
-        serviceIntent.putExtra("Activity", "Home");
-        startService(serviceIntent);
+        if (isMyServiceRunning(LocationTraceService.class)){
+            stopService(serviceIntent);
+            serviceIntent = new Intent(this, LocationTraceService.class);
+            Bundle bundle = new Bundle();
+            bundle.putString("Activity","Home");
+            serviceIntent.putExtras(bundle);
+            startService(serviceIntent);
+        }
+
     }
 
     @Override
@@ -217,7 +230,7 @@ public class HomeActivity extends Activity implements View.OnClickListener {
         stopService(serviceIntent);
     }
 
-    class IncomingHandler extends Handler {
+    static class IncomingHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
 
@@ -253,6 +266,16 @@ public class HomeActivity extends Activity implements View.OnClickListener {
                 }
             });
         }
+    }
+
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

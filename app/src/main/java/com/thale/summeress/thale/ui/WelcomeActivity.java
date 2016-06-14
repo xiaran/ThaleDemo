@@ -57,23 +57,32 @@ public class WelcomeActivity extends Activity {
                 getString(R.string.preference_file_key), Context.MODE_PRIVATE
         );
         editor = sharedPreferences.edit();
+        serviceIntent = new Intent(this, LocationTraceService.class);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Log.i(TAG, "request permission");
+            ActivityCompat.requestPermissions(WelcomeActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACCESS_COARSE_LOCATION},
+                    1);
+        }
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         Log.d(TAG, "onStart");
-        serviceIntent = new Intent(this, LocationTraceService.class);
-        Bundle bundle = new Bundle();
-        bundle.putString("Activity","Welcome");
-        serviceIntent.putExtras(bundle);
-        startService(serviceIntent);
     }
 
     @Override
     protected void onResume() {
         Log.d(TAG, "onResume");
         super.onResume();
+
+        Bundle bundle = new Bundle();
+        bundle.putString("Activity","Welcome");
+        serviceIntent.putExtras(bundle);
+        startService(serviceIntent);
+
     }
 
     @Override
@@ -96,6 +105,7 @@ public class WelcomeActivity extends Activity {
             case 1:
                 if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+
             } else {
                     Toast.makeText(context, "Permission Denied", Toast.LENGTH_LONG);
                     Intent intent = new Intent(Intent.ACTION_MAIN);
@@ -126,9 +136,12 @@ public class WelcomeActivity extends Activity {
                 return;
             }
             else if(latitude==0.1 && longitude == 0.1){
-                ActivityCompat.requestPermissions(WelcomeActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION},
-                        1);
+                context.stopService(serviceIntent);
+                Intent intent = new Intent(Intent.ACTION_MAIN);
+                intent.addCategory(Intent.CATEGORY_HOME);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
+                return;
             }
             mLocation.setLatitude(latitude);
             mLocation.setLongitude(longitude);

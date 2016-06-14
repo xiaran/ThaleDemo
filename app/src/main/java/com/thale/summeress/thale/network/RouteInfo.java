@@ -47,7 +47,7 @@ public class RouteInfo {
                     "&destination=" + dest +
                     "&region=hk&mode=transit&transit_mode=subway&sensor=false" +
                     "&language=en&key=AIzaSyAfEV1GZo5lmK2d4XRpweQerVH3tUoNrHU";
-            Log.d("myUrl: ", myUrl);
+            Log.i(TAG, "myUrl: "+myUrl);
             RequestQueue requestQueue = Volley.newRequestQueue(context);
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                     Request.Method.GET, myUrl, null, new Response.Listener<JSONObject>() {
@@ -56,7 +56,7 @@ public class RouteInfo {
                     try {
                         String status = jsonObject.getString("status");
                         if (status.equals("OK")) {
-                            Log.d("status: ", status);
+                            Log.i(TAG, "status: "+status);
                             JSONArray results = jsonObject.getJSONArray("routes");
                             JSONObject routeInfo = results.getJSONObject(0);
                             JSONArray legs = routeInfo.getJSONArray("legs");
@@ -101,7 +101,7 @@ public class RouteInfo {
                                 }
                             }
                         } else {
-                            Log.d("Status: ", status);
+                            Log.i(TAG, "Status: "+status);
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -109,14 +109,16 @@ public class RouteInfo {
                     callback.onSuccess(outerRouteInfo);
                     if (progressDialog.isShowing()){
                         progressDialog.dismiss();
+                        first = true;
                     }
                 }
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError volleyError) {
-                    Log.d("volleyError", volleyError.getMessage());
+                    Log.i(TAG,"volleyError"+volleyError.getMessage());
                     if (progressDialog.isShowing()){
                         progressDialog.dismiss();
+                        first = true;
                     }
                 }
             });
@@ -184,7 +186,7 @@ public class RouteInfo {
         } catch (JSONException e){
             e.printStackTrace();
         }
-        Log.i("transit", transit.toString());
+        Log.i(TAG, "transit"+transit.toString());
         return transit;
     }
 }

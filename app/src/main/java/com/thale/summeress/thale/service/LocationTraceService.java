@@ -85,14 +85,16 @@ public class LocationTraceService extends Service implements GoogleApiClient.Con
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i(TAG, "onStartCommand");
-        Bundle bundle = intent.getExtras();
-        activity = bundle.getString("Activity");
-        Log.i(TAG, activity);
-        CheckTowerAndGpsStatus();
-        if (isNetworkEnabled && isGpsEnabled) {
-            init();
+        if (intent != null) {
+            Bundle bundle = intent.getExtras();
+            activity = bundle.getString("Activity");
+            Log.i(TAG, activity);
+            CheckTowerAndGpsStatus();
+            if (isNetworkEnabled && isGpsEnabled) {
+                init();
+            }
         }
-        return super.onStartCommand(intent, flags, startId);
+        return super.onStartCommand(intent, Service.START_REDELIVER_INTENT, startId);
     }
 
     @Override
@@ -166,7 +168,7 @@ public class LocationTraceService extends Service implements GoogleApiClient.Con
         Log.d(TAG, location.toString());
         handleNewLocation(location);
         if (first){
-            INTERVAL = 60 * 1000;
+            INTERVAL = 300 * 1000;
             mLocationRequest.setInterval(INTERVAL);
             first = false;
         }

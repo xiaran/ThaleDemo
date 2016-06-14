@@ -123,12 +123,10 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         builder.setPositiveButton("Confirm It", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
-                Intent intent = new Intent(context, ResultActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                dialog.dismiss();
                 editor.putString(getString(R.string.destination), destination);
                 editor.commit();
+                dialog.dismiss();
+                Intent intent = new Intent(context, ResultActivity.class);
                 context.startActivity(intent);
             }
         });

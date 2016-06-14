@@ -1,6 +1,8 @@
 package com.thale.summeress.thale.ui;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.multidex.MultiDex;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -38,17 +40,19 @@ public class DisplayActivity extends FragmentActivity implements OnMapReadyCallb
 
     private ImageButton next;
     private ImageButton previous;
+    private ImageButton change;
 
     private PolylineOptions options;
 
     private int index;
+
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate");
         setContentView(R.layout.activity_display);
-
         init();
 
     }
@@ -59,11 +63,15 @@ public class DisplayActivity extends FragmentActivity implements OnMapReadyCallb
 
         next = (ImageButton)findViewById(R.id.next);
         previous = (ImageButton)findViewById(R.id.previous);
+        change = (ImageButton)findViewById(R.id.changeToInner);
 
         next.setOnClickListener(this);
         previous.setOnClickListener(this);
+        change.setOnClickListener(this);
 
         index = 0;
+
+        sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -73,9 +81,10 @@ public class DisplayActivity extends FragmentActivity implements OnMapReadyCallb
     @Override
     protected void onResume() {
         super.onResume();
-        Log.i(TAG, "onResume");
-        Bundle bundle = getIntent().getExtras();
-        String info = bundle.getString("displayInfo");
+        Log.d(TAG, "onResume");
+//        Bundle bundle = getIntent().getExtras();
+//        String info = bundle.getString("displayInfo");
+        String info = sharedPreferences.getString(getString(R.string.display_info), "");
         Gson gson = new Gson();
         Type entityType = new TypeToken<LinkedHashMap<String, ArrayList<String>>>(){}.getType();
         displayInfo = gson.fromJson(info, entityType);
@@ -109,7 +118,13 @@ public class DisplayActivity extends FragmentActivity implements OnMapReadyCallb
                     display();
                 }
                 break;
-
+            case R.id.changeToInner:
+                Log.i(TAG, "click changeBtn");
+                Intent intent = new Intent(DisplayActivity.this, InnerStationActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("Activity", "Display");
+                intent.putExtras(bundle);
+                startActivity(intent);
         }
     }
 
@@ -191,7 +206,7 @@ public class DisplayActivity extends FragmentActivity implements OnMapReadyCallb
 
         // Add a marker in Sydney and move the camera
         mMap.addMarker(new MarkerOptions().position(source).title("You Are Here"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(source, 18));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(source, 16));
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         mMap.getUiSettings().setZoomControlsEnabled(true);
         options = new PolylineOptions();
@@ -204,6 +219,21 @@ public class DisplayActivity extends FragmentActivity implements OnMapReadyCallb
         }
         options.width(15).color(this.getResources().getColor(R.color.indianRed));
         mMap.addPolyline(options);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(DisplayActivity.this, ResultActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        startActivity(intent);
     }
 
     @Override

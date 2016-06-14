@@ -22,9 +22,7 @@ import com.thale.summeress.thale.network.ExitInfoTask;
 import com.thale.summeress.thale.network.RouteInfo;
 import com.thale.summeress.thale.tools.Path;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -70,10 +68,9 @@ public class ResultActivity extends Activity implements AdapterView.OnItemClickL
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.i(TAG, "onCreate()");
+        Log.d(TAG, "onCreate()");
         setContentView(R.layout.activity_result);
         init();
-        routeListView.setOnItemClickListener(this);
     }
 
     private void init(){
@@ -81,6 +78,8 @@ public class ResultActivity extends Activity implements AdapterView.OnItemClickL
         context = ResultActivity.this;
 
         sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+
         curLocation = sharedPreferences.getString(getString(R.string.current_location), "");
         curLocation = curLocation.replace("-", ",");
 
@@ -96,14 +95,16 @@ public class ResultActivity extends Activity implements AdapterView.OnItemClickL
                 R.drawable.exit};
         pathList = new ArrayList<>();
         routeListView = (ListView) findViewById(R.id.displayRoute);
+        routeListView.setOnItemClickListener(this);
+
         adapter = new RouteAdapter();
+        adapter.notifyDataSetChanged();
 
         displayInfo = new LinkedHashMap<>();
         pointsInfo = new ArrayList<>();
 
         pointsInfo.add(curLocation);
         displayInfo.put(displayInfo.size()+"source", pointsInfo);
-
         getRouteInfo(curLocation, dest, context, new RouteInfo.VolleyCallback() {
             @Override
             public void onSuccess(Map result) {
@@ -119,22 +120,35 @@ public class ResultActivity extends Activity implements AdapterView.OnItemClickL
     @Override
     protected void onResume() {
         super.onResume();
-        Log.i(TAG, "onResume()");
-
+        Log.d(TAG, "onResume()");
+        routeListView.setAdapter(adapter);
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Log.i(TAG, "onItemClick");
-        Log.i(TAG, "displayInfo "+displayInfo.toString());
-
+        Log.d(TAG, "onItemClick");
         Gson gson = new Gson();
         String info = gson.toJson(displayInfo);
-        Intent intent = new Intent(ResultActivity.this, DisplayActivity.class);
-        Bundle bundle  = new Bundle();
-        bundle.putString("displayInfo", info);
-        intent.putExtras(bundle);
-        startActivity(intent);
+        editor.putString(getString(R.string.display_info), info);
+        editor.commit();
+
+        if (pathList.get(position).getDetails().contains("Take Exit")){
+            Intent intent = new Intent(ResultActivity.this, InnerStationActivity.class);
+            Bundle bundle = new Bundle();
+//            bundle.putString("displayInfo", info);
+            bundle.putString("Activity", "Result");
+            intent.putExtras(bundle);
+            startActivity(intent);
+        }else {
+            Log.i(TAG, "displayInfo " + displayInfo.toString());
+//            Gson gson = new Gson();
+//            String info = gson.toJson(displayInfo);
+            Intent intent = new Intent(ResultActivity.this, DisplayActivity.class);
+//            Bundle bundle = new Bundle();
+//            bundle.putString("displayInfo", info);
+//            intent.putExtras(bundle);
+            startActivity(intent);
+        }
     }
 
     private String getUrl(String flag){
@@ -163,7 +177,7 @@ public class ResultActivity extends Activity implements AdapterView.OnItemClickL
                 int id = Character.getNumericValue(key.charAt(0));
                 switch(id){
                     case 0:
-                        if (key.contains("FIRSTWALKING")){
+                        if (key.contains("FIRSTWALKING") || key.contains("WALKING")){
                             firstWalk = value.get(0).split("-")[0]+","+value.get(0).split("-")[1];
                             Log.i(TAG, "firstWalk "+firstWalk);
                             Log.i(TAG, "geocodeName "+geocodeName);
@@ -173,7 +187,10 @@ public class ResultActivity extends Activity implements AdapterView.OnItemClickL
                                 ExitInfoTask task = new ExitInfoTask(ResultActivity.this, station);
                                 try {
                                     exitInfo = task.execute(mUrl).get();
+                                    Log.i(TAG, "exitInfo "+exitInfo);
                                     if (!exitInfo.equals("Match Failed")) {
+                                        editor.putString(getString(R.string.exit_info), exitInfo);
+                                        editor.commit();
                                         Path path = new Path(imageID[4], "Take Exit " + exitInfo + " From "+station);
                                         pathList.add(path);
                                     }
@@ -265,6 +282,8 @@ public class ResultActivity extends Activity implements AdapterView.OnItemClickL
                 try {
                     exitInfo = task.execute(mUrl).get();
                     if (!exitInfo.equals("Match Failed")) {
+                        editor.putString(getString(R.string.exit_info), exitInfo);
+                        editor.commit();
                         Path exit = new Path(imageID[4], "Take Exit " + exitInfo + " From "+outStation);
                         pathList.add(exit);
                     }
@@ -304,6 +323,24 @@ public class ResultActivity extends Activity implements AdapterView.OnItemClickL
                 textView.setText(path.getDetails());
             return layout;
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop");
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d(TAG, "onStart");
     }
 
     @Override

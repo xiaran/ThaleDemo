@@ -21,7 +21,6 @@ import java.util.regex.Pattern;
 public class ExitInfoTask extends AsyncTask<String, Void, String>{
     private String TAG = "ExitInfoTask";
 
-    private String mResponse;
     private String mStationName;
     private String exitInfo;
     private Context mContext;
@@ -30,6 +29,7 @@ public class ExitInfoTask extends AsyncTask<String, Void, String>{
     public ExitInfoTask(Context context, String station){
         mContext = context;
         mStationName = station;
+        exitInfo = "";
     }
     protected void onPreExecute() {
         Log.i(TAG, "onPreExecute()");
@@ -48,19 +48,14 @@ public class ExitInfoTask extends AsyncTask<String, Void, String>{
         Log.i(TAG, "doInBackground()");
         try{
             Log.i(TAG, "myUrl "+urls[0]);
-            mResponse = downloadUrl(urls[0]);
-            Pattern pattern = Pattern.compile("Take\\sexit\\s"+mStationName + "\\sExit\\s([A-Z]\\d?)");
-            Matcher matcher = pattern.matcher(mResponse);
-            if (matcher.find()) {
-                exitInfo = matcher.group(1);
-                matcher.group();
-            } else {
+            exitInfo = downloadUrl(urls[0]);
+            if (exitInfo.equals("")){
                 exitInfo = "Match Failed";
             }
             Log.i(TAG, exitInfo);
             return exitInfo;
         } catch (IOException e){
-            return "Unable to retrieve web page. URL may be invalid";
+            return "Match Failed";
         }
     }
 
@@ -103,16 +98,27 @@ public class ExitInfoTask extends AsyncTask<String, Void, String>{
 
     public String readIt(InputStream stream) throws IOException, UnsupportedEncodingException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
-        StringBuilder response = new StringBuilder();
+        StringBuilder response;
+        String exit="";
         char[] buffer = new char[65536];
         int read;
+        Pattern pattern = Pattern.compile("Take\\sexit\\s"+mStationName + "\\sExit\\s([A-Z]\\d?)");
+
         while (true){
+            response = new StringBuilder();
             read = reader.read(buffer);
+            response.append(buffer);
+            Matcher matcher = pattern.matcher(response.toString());
+            if (matcher.find()) {
+                exit = matcher.group(1);
+                matcher.group();
+                Log.i(TAG, exit);
+                break;
+            }
             if (read == -1){
                 break;
             }
-            response.append(buffer);
         }
-        return response.toString();
+        return exit;
     }
 }

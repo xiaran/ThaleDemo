@@ -9,5 +9,16 @@
         android:id="@+id/inner"
         android:src="@drawable/admiralty"
         android:scaleType="matrix"/>
+    <ImageButton
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:id="@+id/changeToOuter"
+        android:src="@drawable/change"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="15dp"
+        android:scaleType="centerInside"
+        android:background="@null"
+        android:visibility="invisible"/>
 
 </RelativeLayout>
