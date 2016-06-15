@@ -10,6 +10,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -40,18 +42,25 @@ public class HomeActivity extends Activity implements View.OnClickListener {
     private int selected = -1;
     private int backButtonCount = 0;
 
-    private static Location mLocation;
-    private static String curLocation;
-    private static String stationName;
-    private static String geocodeName;
+    private Location mLocation;
+    private String curLocation;
+    private String stationName;
+    private String geocodeName;
 
-    private static Intent serviceIntent;
+    private Intent serviceIntent;
     public static Handler mHandler;
 
-    public static Context context;
+    public Context context;
 
     private SharedPreferences sharedPreferences;
-    private static SharedPreferences.Editor editor;
+    private SharedPreferences.Editor editor;
+
+
+    private LocationManager locationManager;
+    private boolean isGpsEnabled = false;
+    private boolean isNetworkEnabled = false;
+    private ConnectivityManager connectivityManager;
+    private NetworkInfo networkInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +79,7 @@ public class HomeActivity extends Activity implements View.OnClickListener {
         );
         editor = sharedPreferences.edit();
         initUI();
-        openGPS();
+        checkGpsStatus();
     }
 
     private void initUI() {
@@ -81,25 +90,48 @@ public class HomeActivity extends Activity implements View.OnClickListener {
         listBtn.setOnClickListener(this);
     }
 
-    private void openGPS(){
-        Log.i("openGPS", "openGPS");
-        LocationManager locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-
-        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
-            return;
+    private void checkGpsStatus(){
+        locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        Log.i(TAG, ""+isNetworkEnabled+" "+isGpsEnabled);
+        if (!isGpsEnabled || !isNetworkEnabled){
+            Log.i(TAG, "something");
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Important Note!");
+            builder.setMessage("Please open GPS");
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    try {
+                        startActivityForResult(intent, 0);
+                    } catch (ActivityNotFoundException e) {
+                        intent.setAction(Settings.ACTION_SETTINGS);
+                    }
+                }
+            });
+            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            AlertDialog dialog = builder.create();
+            dialog.show();
         }
+    }
+
+    private void openNetworkConnection(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Important Note!");
-        builder.setMessage("Please open GPS");
+        builder.setMessage("Please enable network access");
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                try {
-                    startActivityForResult(intent, 0);
-                } catch (ActivityNotFoundException e) {
-                    intent.setAction(Settings.ACTION_SETTINGS);
-                }
+                Intent intent = new Intent(Intent.ACTION_MAIN);
+                intent.setClassName("com.android.phone","com.android.phone.NetworkSetting");
+                startActivity(intent);
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -108,7 +140,8 @@ public class HomeActivity extends Activity implements View.OnClickListener {
                 dialog.dismiss();
             }
         });
-        builder.create().show();
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     @Override
@@ -116,8 +149,13 @@ public class HomeActivity extends Activity implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.searchBtn:
                 Log.i(TAG, "Click SearchBtn");
-                Intent intent = new Intent(this, MapActivity.class);
-                startActivity(intent);
+                if (isOnline()) {
+                    Intent intent = new Intent(this, MapActivity.class);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(this, "Can not access network, Please check your setting", Toast.LENGTH_SHORT);
+                    openNetworkConnection();
+                }
             break;
             case R.id.listBtn:
                 Log.i(TAG, "Click ListBtn");
@@ -230,7 +268,14 @@ public class HomeActivity extends Activity implements View.OnClickListener {
         stopService(serviceIntent);
     }
 
-    static class IncomingHandler extends Handler {
+    public boolean isOnline() {
+        connectivityManager =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        networkInfo = connectivityManager.getActiveNetworkInfo();
+        return networkInfo != null && networkInfo.isConnectedOrConnecting();
+    }
+
+    class IncomingHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
 
@@ -239,32 +284,37 @@ public class HomeActivity extends Activity implements View.OnClickListener {
             String[] parts = curLocation.split("-");
             double latitude = Double.parseDouble(parts[0]);
             double longitude = Double.parseDouble(parts[1]);
-            if (latitude==0 && longitude == 0) {
-                Toast.makeText(context, "Please check your network and gps setting", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            mLocation.setLatitude(latitude);
-            mLocation.setLongitude(longitude);
-            getStationName(mLocation, context, new StationInfo.VolleyCallback() {
-                @Override
-                public void onSuccess(String result) {
-                    Log.i(TAG, "onSuccess");
-                    Log.i(TAG, "stationName " + result);
-                    stationName = result;
-                    getGeocodeName(mLocation, context, new GeocodeInfo.VolleyCallback(){
-                        @Override
-                        public void onSuccess(String result) {
-                            Log.i(TAG, "onSuccess");
-                            Log.i(TAG, "geocodeName " + result);
-                            geocodeName = result;
-                            editor.putString(context.getString(R.string.current_location), curLocation);
-                            editor.putString(context.getString(R.string.station_name), stationName);
-                            editor.putString(context.getString(R.string.geocode_name), geocodeName);
-                            editor.commit();
+
+            editor.putString(context.getString(R.string.current_location), curLocation);
+            editor.commit();
+
+            if (isOnline()) {
+                mLocation.setLatitude(latitude);
+                mLocation.setLongitude(longitude);
+                getStationName(mLocation, context, new StationInfo.VolleyCallback() {
+                    @Override
+                    public void onSuccess(String result) {
+                        Log.i(TAG, "onSuccess");
+                        Log.i(TAG, "stationName " + result);
+                        if (result.equals("Error")){
+                            Toast.makeText(context, "can not access network, Please check your setting", Toast.LENGTH_SHORT);
                         }
-                    });
-                }
-            });
+                        stationName = result;
+                        getGeocodeName(mLocation, context, new GeocodeInfo.VolleyCallback() {
+                            @Override
+                            public void onSuccess(String result) {
+                                Log.i(TAG, "onSuccess");
+                                Log.i(TAG, "geocodeName " + result);
+                                geocodeName = result;
+                                editor.putString(context.getString(R.string.current_location), curLocation);
+                                editor.putString(context.getString(R.string.station_name), stationName);
+                                editor.putString(context.getString(R.string.geocode_name), geocodeName);
+                                editor.commit();
+                            }
+                        });
+                    }
+                });
+            }
         }
     }
 

@@ -99,7 +99,11 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
     public void onMapClick(LatLng arg0) {
         marker.remove();
-
+        if (curLocation.equals("") || curLocation.equals("0.0-0.0") || curLocation.equals("0.1-0.1")){
+            Toast.makeText(this, "can not access your current location, Please check your GPS setting.", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this, HomeActivity.class);
+            startActivity(intent);
+        }
         dest = arg0;
         destination = String.valueOf(dest.latitude)+","+String.valueOf(dest.longitude);
         Location location = new Location("");
@@ -173,12 +177,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         }
         mMap.setMyLocationEnabled(true);
         curLocation = sharedPreferences.getString(getString(R.string.current_location), "");
-        Log.i("curLocation", curLocation);
-        if (curLocation.equals("")){
-            Toast.makeText(this, "can not access your current location, Please check your GPS setting.", Toast.LENGTH_LONG).show();
-            Intent intent = new Intent(this, HomeActivity.class);
-            startActivity(intent);
-        }
+        Log.i(TAG, "curLocation" + curLocation);
+
         String[] parts = curLocation.split("-");
         mLocation.setLatitude(Double.parseDouble(parts[0]));
         mLocation.setLongitude(Double.parseDouble(parts[1]));
