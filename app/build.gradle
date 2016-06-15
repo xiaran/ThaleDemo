@@ -11,13 +11,23 @@ android {
         versionName "1.0"
         multiDexEnabled true
     }
-    buildTypes {
+    signingConfigs {
         release {
+            storeFile file('../hkust2014_gmission.jks')
+            storePassword 'hkust2014'
+            keyAlias 'hkust2014_gmission'
+            keyPassword 'hkust2014'
+        }
+    }
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.release
             minifyEnabled false
             debuggable true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
 }
 
 dependencies {

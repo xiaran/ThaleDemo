@@ -61,6 +61,7 @@ public class StationInfo {
                 @Override
                 public void onErrorResponse(VolleyError volleyError) {
                     Log.d("volleyError", volleyError.getMessage());
+                    callback.onSuccess("Error");
                 }
             });
             requestQueue.add(jsonObjectRequest);

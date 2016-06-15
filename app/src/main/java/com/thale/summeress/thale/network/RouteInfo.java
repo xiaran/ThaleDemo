@@ -106,11 +106,12 @@ public class RouteInfo {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    callback.onSuccess(outerRouteInfo);
                     if (progressDialog.isShowing()){
                         progressDialog.dismiss();
                         first = true;
                     }
+                    callback.onSuccess(outerRouteInfo);
+
                 }
             }, new Response.ErrorListener() {
                 @Override
@@ -120,6 +121,7 @@ public class RouteInfo {
                         progressDialog.dismiss();
                         first = true;
                     }
+                    callback.onSuccess(outerRouteInfo);
                 }
             });
             requestQueue.add(jsonObjectRequest);

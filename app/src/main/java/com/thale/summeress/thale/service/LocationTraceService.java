@@ -56,10 +56,12 @@ public class LocationTraceService extends Service implements GoogleApiClient.Con
     }
 
     private void CheckTowerAndGpsStatus() {
+        Log.i(TAG, "checkTowerAndGpsStatus");
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
         isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        if (!isNetworkEnabled && !isGpsEnabled)
+        Log.i(TAG, ""+isNetworkEnabled+" "+isGpsEnabled);
+        if (!isNetworkEnabled || !isGpsEnabled)
         {
             Location nLocation = new Location("no");
             nLocation.setLatitude(0);
@@ -140,6 +142,7 @@ public class LocationTraceService extends Service implements GoogleApiClient.Con
     public void stopLocating() {
         Log.i(TAG, "GpsLoggingService.StopLocating");
         stopForeground(true);
+        first = true;
         isLocating = false;
         isLocationRequestSuspend = false;
 
