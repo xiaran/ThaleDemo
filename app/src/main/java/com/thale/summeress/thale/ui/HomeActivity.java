@@ -266,6 +266,7 @@ public class HomeActivity extends Activity implements View.OnClickListener {
         Log.d(TAG, "onDestroy");
         super.onDestroy();
         stopService(serviceIntent);
+
     }
 
     public boolean isOnline() {

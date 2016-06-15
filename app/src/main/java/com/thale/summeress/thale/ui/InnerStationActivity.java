@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.thale.summeress.thale.R;
 import com.thale.summeress.thale.tools.ScaleImageView;
@@ -144,11 +145,13 @@ public class InnerStationActivity extends Activity implements View.OnClickListen
         activity = getIntent().getExtras().getString("Activity");
         if (activity.equals("Result") || activity.equals("Display")){
             exitInfo = sharedPreferences.getString(getString(R.string.exit_info), "");
-            exitInfo = exitInfo.substring(0,1);
-            Log.i(TAG, "exitInfo "+exitInfo);
-            change.setVisibility(View.VISIBLE);
-            change.setOnClickListener(this);
-            drawRoute(exitInfo);
+            if (!exitInfo.equals("")) {
+                exitInfo = exitInfo.substring(0, 1);
+                Log.i(TAG, "exitInfo " + exitInfo);
+                change.setVisibility(View.VISIBLE);
+                change.setOnClickListener(this);
+                drawRoute(exitInfo);
+            }
         }else if(activity.equals("Home")){
             String facility = getIntent().getExtras().getString("Facility");
             drawMarker(facility);
@@ -195,71 +198,73 @@ public class InnerStationActivity extends Activity implements View.OnClickListen
         img.recycle();
     }
 
-    public void drawRoute(String exitInfo){
-        if (exitInfo.equals("")){
+    public void drawRoute(String exitInfo) {
+        if (exitInfo.equals("")) {
             return;
         }
         int flag = -1;
         int y = 0;
-        float ratioTop = (float)(topRight.y - topLeft.y) / (topRight.x - topLeft.x);
-        float rationBottom = (float)(bottomRight.y - bottomLeft.y) / (bottomRight.x - bottomLeft.x);
-        Log.i(TAG, "ratioTop "+ratioTop);
-        Log.i(TAG, "rationBottom "+rationBottom);
+        float ratioTop = (float) (topRight.y - topLeft.y) / (topRight.x - topLeft.x);
+        float rationBottom = (float) (bottomRight.y - bottomLeft.y) / (bottomRight.x - bottomLeft.x);
+        Log.i(TAG, "ratioTop " + ratioTop);
+        Log.i(TAG, "rationBottom " + rationBottom);
         ArrayList<Point> points = new ArrayList<>();
         points.add(curPos);
         Point exitPoint = EXIT.get((int) exitInfo.charAt(0) - 65);
 
         //outOfBound
         if (curPos.x < bottomLeft.x || curPos.y < topLeft.y ||
-                curPos.x > topRight.x || curPos.y > bottomRight.y){
+                curPos.x > topRight.x || curPos.y > bottomRight.y) {
             flag = -1;
             Log.i(TAG, "out of bound");
-        }
-        else {
-            ArrayList<Integer> towards = TABLE.get(exitInfo);
-            for (Integer i : towards) {
-                Log.i(TAG, "i= " + i);
-                if ((i == 1 || i == 2) && curPos.y > topLeft.y) {
-                    y = topLeft.y - (int)((topRight.x - curPos.x) * ratioTop) ;
+        } else {
+            if (TABLE.containsKey(exitInfo)) {
+                ArrayList<Integer> towards = TABLE.get(exitInfo);
+                for (Integer i : towards) {
+                    Log.i(TAG, "i= " + i);
+                    if ((i == 1 || i == 2) && curPos.y > topLeft.y) {
+                        y = topLeft.y - (int) ((topRight.x - curPos.x) * ratioTop);
+                    } else if ((i == 3 || i == 4) && curPos.y < bottomRight.y) {
+                        y = bottomLeft.y + (int) ((curPos.x - bottomLeft.x) * rationBottom);
+                    }
+                    if (towards.size() == 1) {
+                        flag = 1;
+                        Log.i(TAG, "flag= " + flag);
+                        points.add(new Point(curPos.x, y));
+                        points.add(RECT.get(i - 1));
+                        points.add(exitPoint);
+                        break;
+                    } else if (RECT.get(i - 1).x < Math.max(curPos.x, exitPoint.x) &&
+                            RECT.get(i - 1).x > Math.min(curPos.x, exitPoint.x) &&
+                            RECT.get(i - 1).y < Math.max(curPos.y, exitPoint.y) &&
+                            RECT.get(i - 1).y > Math.min(curPos.y, exitPoint.y)) {
+                        flag = 2;
+                        points.add(new Point(curPos.x, y));
+                        points.add(RECT.get(i - 1));
+                        points.add(exitPoint);
+                        Log.i(TAG, "flag= " + flag);
+                        break;
+                    }
                 }
-                else if((i == 3 || i == 4) && curPos.y < bottomRight.y) {
-                    y = bottomLeft.y + (int)((curPos.x - bottomLeft.x) * rationBottom);
-                }
-                if (towards.size() == 1) {
-                    flag = 1;
-                    Log.i(TAG, "flag= " + flag);
-                    points.add(new Point(curPos.x, y));
-                    points.add(RECT.get(i - 1));
-                    points.add(exitPoint);
-                    break;
-                }
-                else if (RECT.get(i - 1).x < Math.max(curPos.x, exitPoint.x) &&
-                        RECT.get(i - 1).x > Math.min(curPos.x, exitPoint.x) &&
-                        RECT.get(i - 1).y < Math.max(curPos.y, exitPoint.y) &&
-                        RECT.get(i - 1).y > Math.min(curPos.y, exitPoint.y)) {
-                    flag = 2;
-                    points.add(new Point(curPos.x, y));
-                    points.add(RECT.get(i - 1));
-                    points.add(exitPoint);
-                    Log.i(TAG, "flag= " + flag);
-                    break;
-                }
+            } else {
+                Toast.makeText(this, "There is no exit " + exitInfo +" in this station", Toast.LENGTH_SHORT);
+                return;
             }
         }
-        Log.i(TAG, "y= "+y);
-        if (flag == -1){
-            Log.i(TAG, "flag= "+flag);
-            points.add(new Point(curPos.x, y));
-            points.add(exitPoint);
-        }
+            Log.i(TAG, "y= " + y);
+            if (flag == -1) {
+                Log.i(TAG, "flag= " + flag);
+                points.add(new Point(curPos.x, y));
+                points.add(exitPoint);
+            }
 
-        for (int i=0;i+1<points.size();i++){
-            mPaint.setColor(Color.RED);
-            mPaint.setStrokeWidth(5);
-            mCanvas.drawLine(points.get(i).x,points.get(i).y,
-                    points.get(i+1).x,points.get(i+1).y, mPaint);
-            inner.invalidate();
-        }
+            for (int i = 0; i + 1 < points.size(); i++) {
+                mPaint.setColor(Color.RED);
+                mPaint.setStrokeWidth(5);
+                mCanvas.drawLine(points.get(i).x, points.get(i).y,
+                        points.get(i + 1).x, points.get(i + 1).y, mPaint);
+                inner.invalidate();
+            }
     }
 
     private void drawMarker(String facility){
