@@ -28,6 +28,8 @@ local.properties
 *.iml
 .idea
 
+build/
+
 # OS-specific files
 .DS_Store
 .DS_Store?
