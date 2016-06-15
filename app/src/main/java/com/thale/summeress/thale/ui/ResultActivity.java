@@ -87,6 +87,7 @@ public class ResultActivity extends Activity implements AdapterView.OnItemClickL
         station = sharedPreferences.getString(getString(R.string.station_name), "");
         geocodeName = sharedPreferences.getString(getString(R.string.geocode_name), "");
         firstWalk = "";
+        exitInfo = "";
         imageID = new int[]{
                 R.drawable.duration,
                 R.drawable.walking,
@@ -130,6 +131,7 @@ public class ResultActivity extends Activity implements AdapterView.OnItemClickL
         Gson gson = new Gson();
         String info = gson.toJson(displayInfo);
         editor.putString(getString(R.string.display_info), info);
+        editor.putString(getString(R.string.exit_info), exitInfo);
         editor.commit();
 
         if (pathList.get(position).getDetails().contains("Take Exit")){
@@ -141,12 +143,7 @@ public class ResultActivity extends Activity implements AdapterView.OnItemClickL
             startActivity(intent);
         }else {
             Log.i(TAG, "displayInfo " + displayInfo.toString());
-//            Gson gson = new Gson();
-//            String info = gson.toJson(displayInfo);
             Intent intent = new Intent(ResultActivity.this, DisplayActivity.class);
-//            Bundle bundle = new Bundle();
-//            bundle.putString("displayInfo", info);
-//            intent.putExtras(bundle);
             startActivity(intent);
         }
     }
@@ -286,6 +283,9 @@ public class ResultActivity extends Activity implements AdapterView.OnItemClickL
                         editor.commit();
                         Path exit = new Path(imageID[4], "Take Exit " + exitInfo + " From "+outStation);
                         pathList.add(exit);
+                    }else{
+                        editor.putString(getString(R.string.exit_info),"");
+                        editor.commit();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

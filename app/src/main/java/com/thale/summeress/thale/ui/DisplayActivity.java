@@ -44,6 +44,8 @@ public class DisplayActivity extends FragmentActivity implements OnMapReadyCallb
 
     private PolylineOptions options;
 
+    private String exitInfo;
+
     private int index;
 
     private SharedPreferences sharedPreferences;
@@ -85,6 +87,8 @@ public class DisplayActivity extends FragmentActivity implements OnMapReadyCallb
 //        Bundle bundle = getIntent().getExtras();
 //        String info = bundle.getString("displayInfo");
         String info = sharedPreferences.getString(getString(R.string.display_info), "");
+        exitInfo = sharedPreferences.getString(getString(R.string.exit_info), "");
+        Log.i(TAG, "exitInfo"+exitInfo);
         Gson gson = new Gson();
         Type entityType = new TypeToken<LinkedHashMap<String, ArrayList<String>>>(){}.getType();
         displayInfo = gson.fromJson(info, entityType);
@@ -120,11 +124,17 @@ public class DisplayActivity extends FragmentActivity implements OnMapReadyCallb
                 break;
             case R.id.changeToInner:
                 Log.i(TAG, "click changeBtn");
-                Intent intent = new Intent(DisplayActivity.this, InnerStationActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putString("Activity", "Display");
-                intent.putExtras(bundle);
-                startActivity(intent);
+                Log.i(TAG, exitInfo);
+                if (exitInfo.equals("")){
+                    Toast.makeText(this, "You are not in subway station and are not allowed to access the inner station", Toast.LENGTH_LONG).show();
+                    return;
+                }else {
+                    Intent intent = new Intent(DisplayActivity.this, InnerStationActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("Activity", "Display");
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
         }
     }
 
