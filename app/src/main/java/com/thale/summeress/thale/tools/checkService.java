@@ -17,8 +17,8 @@ import com.google.android.gms.common.zzc;
 /**
  * Created by summeress on 16/5/5.
  */
-public class checkService {
-    private static String TAG = "checkService";
+public class CheckService {
+    private static String TAG = "CheckService";
 
     public static boolean checkPlayServices(Activity activity) {
         GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();

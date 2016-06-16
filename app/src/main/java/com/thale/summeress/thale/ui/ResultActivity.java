@@ -20,7 +20,7 @@ import com.google.gson.Gson;
 import com.thale.summeress.thale.R;
 import com.thale.summeress.thale.network.ExitInfoTask;
 import com.thale.summeress.thale.network.RouteInfo;
-import com.thale.summeress.thale.tools.Path;
+import com.thale.summeress.thale.model.Path;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -175,7 +175,7 @@ public class ResultActivity extends Activity implements AdapterView.OnItemClickL
                 switch(id){
                     case 0:
                         if (key.contains("FIRSTWALKING") || key.contains("WALKING")){
-                            firstWalk = value.get(0).split("-")[0]+","+value.get(0).split("-")[1];
+                            firstWalk = value.get(value.size()-1).split("-")[0]+","+value.get(0).split("-")[1];
                             Log.i(TAG, "firstWalk "+firstWalk);
                             Log.i(TAG, "geocodeName "+geocodeName);
                             Log.i(TAG, "stationName "+station);
