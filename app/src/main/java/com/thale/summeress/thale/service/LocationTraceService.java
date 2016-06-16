@@ -171,7 +171,7 @@ public class LocationTraceService extends Service implements GoogleApiClient.Con
         Log.d(TAG, location.toString());
         handleNewLocation(location);
         if (first){
-            INTERVAL = 60 * 1000;
+            INTERVAL = 120 * 1000;
             mLocationRequest.setInterval(INTERVAL);
             first = false;
         }

@@ -71,15 +71,6 @@ public class WelcomeActivity extends Activity {
         serviceIntent = new Intent(this, LocationTraceService.class);
     }
 
-    private void checkPermission(){
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Log.i(TAG, "request permission");
-            ActivityCompat.requestPermissions(WelcomeActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
-                            Manifest.permission.ACCESS_COARSE_LOCATION},
-                    1);
-        }
-    }
 
     public boolean isOnline() {
         connectivityManager =
@@ -92,8 +83,6 @@ public class WelcomeActivity extends Activity {
     protected void onStart() {
         super.onStart();
         Log.d(TAG, "onStart");
-
-        checkPermission();
     }
 
     @Override
@@ -120,23 +109,6 @@ public class WelcomeActivity extends Activity {
         Log.i(TAG, "onDestroy");
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode){
-            case 1:
-                if (grantResults.length > 0
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-            } else {
-                    Toast.makeText(context, "Permission Denied", Toast.LENGTH_LONG);
-                    Intent intent = new Intent(Intent.ACTION_MAIN);
-                    intent.addCategory(Intent.CATEGORY_HOME);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                }
-
-        }
-    }
 
     class IncomingHandler extends Handler {
         @Override

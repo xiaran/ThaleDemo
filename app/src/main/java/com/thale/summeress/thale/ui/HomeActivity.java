@@ -1,5 +1,6 @@
 package com.thale.summeress.thale.ui;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
@@ -8,6 +9,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
@@ -17,6 +19,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.provider.Settings;
 import android.support.multidex.MultiDex;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
@@ -29,7 +32,7 @@ import com.thale.summeress.thale.service.LocationTraceService;
 
 import static com.thale.summeress.thale.network.GeocodeInfo.getGeocodeName;
 import static com.thale.summeress.thale.network.StationInfo.getStationName;
-import static com.thale.summeress.thale.tools.checkService.checkPlayServices;
+import static com.thale.summeress.thale.tools.CheckService.checkPlayServices;
 
 public class HomeActivity extends Activity implements View.OnClickListener {
 
@@ -79,6 +82,7 @@ public class HomeActivity extends Activity implements View.OnClickListener {
         );
         editor = sharedPreferences.edit();
         initUI();
+        checkPermission();
         checkGpsStatus();
     }
 
@@ -119,6 +123,34 @@ public class HomeActivity extends Activity implements View.OnClickListener {
             });
             AlertDialog dialog = builder.create();
             dialog.show();
+        }
+    }
+
+    private void checkPermission(){
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Log.i(TAG, "request permission");
+            ActivityCompat.requestPermissions(HomeActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACCESS_COARSE_LOCATION},
+                    1);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode){
+            case 1:
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                } else {
+                    Toast.makeText(context, "Permission Denied", Toast.LENGTH_LONG);
+                    Intent intent = new Intent(Intent.ACTION_MAIN);
+                    intent.addCategory(Intent.CATEGORY_HOME);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                }
+
         }
     }
 
@@ -170,7 +202,8 @@ public class HomeActivity extends Activity implements View.OnClickListener {
         builder.setTitle("Please choose the desired one");
         final String[] choiceList = {
                 "Tourist Service", "Lost Property Office", "Police Post",
-                "Shop", "Customer Service Centre", "ATM"
+                "7-11", "759-Store", "Customer Service Centre", "ATM (Bank of China)",
+                "ATM (Hang Seng Bank)"
         };
         builder.setSingleChoiceItems(choiceList, selected, new DialogInterface.OnClickListener() {
             @Override

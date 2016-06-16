@@ -1,4 +1,4 @@
-package com.thale.summeress.thale.tools;
+package com.thale.summeress.thale.model;
 
 /**
  * Created by summeress on 16/6/9.
