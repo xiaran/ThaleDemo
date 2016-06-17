@@ -61,6 +61,8 @@ public class WelcomeActivity extends Activity {
     }
 
     private void init(){
+        stationName = "";
+        geocodeName = "";
         mLocation = new Location("0,0");
         mHandler = new IncomingHandler();
         context = WelcomeActivity.this;
@@ -152,6 +154,9 @@ public class WelcomeActivity extends Activity {
                 });
             }else {
                 try {
+                    editor.putString(context.getString(R.string.station_name), stationName);
+                    editor.putString(context.getString(R.string.geocode_name), geocodeName);
+                    editor.commit();
                     Thread.sleep(1500);
                 } catch (InterruptedException e) {
                 }
