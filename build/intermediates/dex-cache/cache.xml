@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<<<<<<< HEAD
 <items version="2" >
 
     <item
@@ -10,6 +9,24 @@
         revision="23.0.3"
         sha1="f4fb6981392ca7680d02fd57d26d6124c141d9d9">
         <dex dex="/Users/bigstone/workspace/android/thalesDemo/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.google.android.gms-play-services-ads-9.0.2_b25fede752bd80e068c383b40370a90cdc6b59cc/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/bigstone/.gradle/caches/modules-2/files-2.1/com.vividsolutions/jts/1.13/3ccfb9b60f04d71add996a666ceb8902904fd805/jts-1.13.jar"
+        jumboMode="true"
+        optimize="false"
+        revision="23.0.3"
+        sha1="3ccfb9b60f04d71add996a666ceb8902904fd805">
+        <dex dex="/Users/bigstone/workspace/android/thalesDemo/app/build/intermediates/transforms/dex/debug/folders/1000/10/jts-1.13_daeb94a4d780e5dc0e8320ace8d0f07406175b1b/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/bigstone/workspace/android/thalesDemo/app/build/intermediates/exploded-aar/com.mapbox.mapboxsdk/mapbox-android-sdk/0.7.2/jars/classes.jar"
+        jumboMode="true"
+        optimize="false"
+        revision="23.0.3"
+        sha1="207029468d5bd98bfa5452f8f43c73fe60f57a87">
+        <dex dex="/Users/bigstone/workspace/android/thalesDemo/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.mapbox.mapboxsdk-mapbox-android-sdk-0.7.2_8339acc9de3c9204cef3b5d8333b6a3fa7d6230f/classes.dex" />
     </item>
     <item
         is-multidex="true"
@@ -35,7 +52,7 @@
         jumboMode="true"
         optimize="false"
         revision="23.0.3"
-        sha1="26dc2e6d9906113edfecf74c62f421de289525f9">
+        sha1="80b819d7a28dcdb28da7fbf3f4e62e00a46758d1">
         <dex dex="/Users/bigstone/workspace/android/thalesDemo/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run-bootstrap_cfb6e15924d37d5be61a6d32f0aafe56dc74a9d7/classes.dex" />
     </item>
     <item
@@ -148,6 +165,15 @@
     </item>
     <item
         is-multidex="true"
+        jar="/Users/bigstone/.gradle/caches/modules-2/files-2.1/com.squareup.okio/okio/1.2.0/c0b52915a48fa91b1b94a28d4a2997bac5f524df/okio-1.2.0.jar"
+        jumboMode="true"
+        optimize="false"
+        revision="23.0.3"
+        sha1="c0b52915a48fa91b1b94a28d4a2997bac5f524df">
+        <dex dex="/Users/bigstone/workspace/android/thalesDemo/app/build/intermediates/transforms/dex/debug/folders/1000/10/okio-1.2.0_37567f7c47dae14e8ec3abb220cc8cdb132f5145/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
         jar="/Users/bigstone/workspace/android/thalesDemo/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-vision/9.0.2/jars/classes.jar"
         jumboMode="true"
         optimize="false"
@@ -220,6 +246,15 @@
     </item>
     <item
         is-multidex="true"
+        jar="/Users/bigstone/.gradle/caches/modules-2/files-2.1/com.squareup.okhttp/okhttp-urlconnection/2.2.0/cb20062e14c523637b7643295418097b48cccec2/okhttp-urlconnection-2.2.0.jar"
+        jumboMode="true"
+        optimize="false"
+        revision="23.0.3"
+        sha1="cb20062e14c523637b7643295418097b48cccec2">
+        <dex dex="/Users/bigstone/workspace/android/thalesDemo/app/build/intermediates/transforms/dex/debug/folders/1000/10/okhttp-urlconnection-2.2.0_068d1a4eaad284ced814eaedcf0357bf929cc2f5/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
         jar="/Users/bigstone/workspace/android/thalesDemo/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-gcm/9.0.2/jars/classes.jar"
         jumboMode="true"
         optimize="false"
@@ -235,6 +270,15 @@
         revision="23.0.3"
         sha1="20e1a0f0de6276a5f36062b655f8b20f8cc00cc4">
         <dex dex="/Users/bigstone/workspace/android/thalesDemo/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.google.android.gms-play-services-maps-9.0.2_785b7df64e86a62eef1cc95d3bf7c7600cca4dee/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/bigstone/.gradle/caches/modules-2/files-2.1/com.squareup.okhttp/okhttp/2.2.0/959c454243581fdf730abfd4f4745441724bcf2c/okhttp-2.2.0.jar"
+        jumboMode="true"
+        optimize="false"
+        revision="23.0.3"
+        sha1="959c454243581fdf730abfd4f4745441724bcf2c">
+        <dex dex="/Users/bigstone/workspace/android/thalesDemo/app/build/intermediates/transforms/dex/debug/folders/1000/10/okhttp-2.2.0_65151f2ac9773de3ac7b33fcaeac3a51631d9df7/classes.dex" />
     </item>
     <item
         is-multidex="true"
@@ -271,6 +315,15 @@
         revision="23.0.3"
         sha1="a45bc1ed812137b21dddd1cedaa3712b308f0b3f">
         <dex dex="/Users/bigstone/workspace/android/thalesDemo/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.google.android.gms-play-services-cast-9.0.2_8ae8a3700b6b07746d5a9f82aae74185f11c6608/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/bigstone/.gradle/caches/modules-2/files-2.1/com.nineoldandroids/library/2.4.0/e9b63380f3a242dbdbf103a2355ad7e43bad17cb/library-2.4.0.jar"
+        jumboMode="true"
+        optimize="false"
+        revision="23.0.3"
+        sha1="e9b63380f3a242dbdbf103a2355ad7e43bad17cb">
+        <dex dex="/Users/bigstone/workspace/android/thalesDemo/app/build/intermediates/transforms/dex/debug/folders/1000/10/library-2.4.0_1778c809ac1f5d0a8e7ab6ce5fbf2f8a7b4a599c/classes.dex" />
     </item>
     <item
         is-multidex="true"
@@ -422,7 +475,7 @@
         jumboMode="true"
         optimize="false"
         revision="23.0.3"
-        sha1="0b06172ef121bb390b50d774b769ff7e50bb01ce">
+        sha1="d7ddc8a0a9eda817bb142e2e05bb039d1af49aa1">
         <dex dex="/Users/bigstone/workspace/android/thalesDemo/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run_cda8233f7db643d1446ef7c5d909d2336f8bde5d/classes.dex" />
     </item>
     <item
@@ -490,6 +543,15 @@
     </item>
     <item
         is-multidex="true"
+        jar="/Users/bigstone/.gradle/caches/modules-2/files-2.1/com.jakewharton/disklrucache/2.0.2/93b399470e72c0bc8cb52379943b63c9aa586cd8/disklrucache-2.0.2.jar"
+        jumboMode="true"
+        optimize="false"
+        revision="23.0.3"
+        sha1="93b399470e72c0bc8cb52379943b63c9aa586cd8">
+        <dex dex="/Users/bigstone/workspace/android/thalesDemo/app/build/intermediates/transforms/dex/debug/folders/1000/10/disklrucache-2.0.2_ffcf4a45b881f7fd31ddee3925032c801ff54ec4/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
         jar="/Users/bigstone/workspace/android/thalesDemo/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-tagmanager-api/9.0.2/jars/classes.jar"
         jumboMode="true"
         optimize="false"
@@ -508,6 +570,3 @@
     </item>
 
 </items>
-=======
-<items version="2" />
->>>>>>> 47df5e7bf4f928746df657751c72c179ec69dbae
