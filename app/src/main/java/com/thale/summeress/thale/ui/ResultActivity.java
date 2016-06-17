@@ -15,6 +15,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.thale.summeress.thale.R;
@@ -93,7 +94,8 @@ public class ResultActivity extends Activity implements AdapterView.OnItemClickL
                 R.drawable.walking,
                 R.drawable.mtr,
                 R.drawable.bus,
-                R.drawable.exit};
+                R.drawable.exit,
+                R.drawable.error};
         pathList = new ArrayList<>();
         routeListView = (ListView) findViewById(R.id.displayRoute);
         routeListView.setOnItemClickListener(this);
@@ -109,10 +111,20 @@ public class ResultActivity extends Activity implements AdapterView.OnItemClickL
         getRouteInfo(curLocation, dest, context, new RouteInfo.VolleyCallback() {
             @Override
             public void onSuccess(Map result) {
-                outerRouteInfo = result;
-                Log.i(TAG, result.toString());
-                extractInfo();
-                routeListView.setAdapter(adapter);
+                Log.i(TAG, ""+result);
+                if (result.size()==0 || result==null){
+                    Log.i(TAG, "outerRouteInfo is null");
+                    Toast.makeText(ResultActivity.this, "Network Error, Please try again", Toast.LENGTH_SHORT).show();
+                }else {
+                    outerRouteInfo = result;
+                    Log.i(TAG, result.toString());
+                    extractInfo();
+                    if (pathList.size()==0 || pathList == null){
+                        pathList.add(new Path(imageID[5], "Network Error"));
+                    } else {
+                        routeListView.setAdapter(adapter);
+                    }
+                }
             }
         });
 
@@ -273,7 +285,7 @@ public class ResultActivity extends Activity implements AdapterView.OnItemClickL
 
             if (inStation){
                 inStation = false;
-                lastWalk = value.get(0).split("-")[0]+","+value.get(0).split("-")[1];
+                lastWalk = value.get(0).split("-")[0]+","+value.get(value.size()-1).split("-")[1];
                 mUrl = getUrl("last");
                 ExitInfoTask task = new ExitInfoTask(ResultActivity.this, outStation);
                 try {

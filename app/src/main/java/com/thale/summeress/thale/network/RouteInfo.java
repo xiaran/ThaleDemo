@@ -40,13 +40,13 @@ public class RouteInfo {
         outerRouteInfo = new LinkedHashMap<>();
 
         if (source.equals("") || dest.equals("")) {
-            return;
+            callback.onSuccess(outerRouteInfo);
         }else {
             String myUrl = "https://maps.googleapis.com/maps/api/directions/json?" +
                     "origin=" + source +
                     "&destination=" + dest +
                     "&region=hk&mode=transit&transit_mode=subway&sensor=false" +
-                    "&language=en&key=AIzaSyAfEV1GZo5lmK2d4XRpweQerVH3tUoNrHU";
+                    "&language=en&key=AIzaSyDd5Q_LOkFSF7ERdzvmjv30xttVj_HWEL4";
             Log.i(TAG, "myUrl: "+myUrl);
             RequestQueue requestQueue = Volley.newRequestQueue(context);
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(

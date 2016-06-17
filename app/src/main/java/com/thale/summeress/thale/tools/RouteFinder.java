@@ -31,7 +31,6 @@ public class RouteFinder {
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
         try {
             while ((line = reader.readLine()) != null) {
-                Log.i(TAG, line);
                 String[] coordinates = line.split(" ");
                 Point start = new Point(Float.parseFloat(coordinates[1]), Float.parseFloat(coordinates[2]));
                 Point end = new Point(Float.parseFloat(coordinates[3]), Float.parseFloat(coordinates[4]));
