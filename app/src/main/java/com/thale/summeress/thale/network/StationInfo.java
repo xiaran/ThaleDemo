@@ -33,7 +33,7 @@ public class StationInfo {
                     "location="+location.getLatitude() + "," + location.getLongitude() +
                     "&rankby=distance&distance=100" +
                     "&types=subway_station&language=en" +
-                    "&key=AIzaSyAfEV1GZo5lmK2d4XRpweQerVH3tUoNrHU";
+                    "&key=AIzaSyDd5Q_LOkFSF7ERdzvmjv30xttVj_HWEL4";
             Log.d(TAG, "myUrl " + myUrl);
             RequestQueue requestQueue = Volley.newRequestQueue(context);
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(

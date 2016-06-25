@@ -33,14 +33,14 @@ public class ExitInfoTask extends AsyncTask<String, Void, String>{
     }
     protected void onPreExecute() {
         Log.i(TAG, "onPreExecute()");
-        if (progressDialog != null){
-            Log.i(TAG, "not null");
-            progressDialog.dismiss();
-            progressDialog = null;
-        }
-        progressDialog = new ProgressDialog(mContext);
-        this.progressDialog.setMessage("Path Planning now, please wait...");
-        this.progressDialog.show();
+//        if (progressDialog != null){
+//            Log.i(TAG, "not null");
+//            progressDialog.dismiss();
+//            progressDialog = null;
+//        }
+//        progressDialog = new ProgressDialog(mContext);
+//        this.progressDialog.setMessage("Path Planning now, please wait...");
+//        this.progressDialog.show();
     }
 
     @Override
@@ -52,7 +52,7 @@ public class ExitInfoTask extends AsyncTask<String, Void, String>{
             if (exitInfo.equals("")){
                 exitInfo = "Match Failed";
             }
-            Log.i(TAG, exitInfo);
+            Log.i(TAG, "exitInfo " + exitInfo);
             return exitInfo;
         } catch (IOException e){
             return "Match Failed";
@@ -62,9 +62,9 @@ public class ExitInfoTask extends AsyncTask<String, Void, String>{
     @Override
     protected void onPostExecute(String result) {
         Log.i(TAG, "onPostExecute()");
-        if (progressDialog != null){
-            progressDialog.dismiss();
-        }
+//        if (progressDialog != null){
+//            progressDialog.dismiss();
+//        }
         super.onPostExecute(result);
     }
 
@@ -112,7 +112,7 @@ public class ExitInfoTask extends AsyncTask<String, Void, String>{
             if (matcher.find()) {
                 exit = matcher.group(1);
                 matcher.group();
-                Log.i(TAG, exit);
+                Log.i(TAG, "exitInfo "+ exit);
                 break;
             }
             if (read == -1){

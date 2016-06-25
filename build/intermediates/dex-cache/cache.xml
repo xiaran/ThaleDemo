@@ -52,7 +52,7 @@
         jumboMode="true"
         optimize="false"
         revision="23.0.3"
-        sha1="80b819d7a28dcdb28da7fbf3f4e62e00a46758d1">
+        sha1="615df38961415645b1915e0239d2f8568e25271e">
         <dex dex="/Users/bigstone/workspace/android/thalesDemo/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run-bootstrap_cfb6e15924d37d5be61a6d32f0aafe56dc74a9d7/classes.dex" />
     </item>
     <item
@@ -475,7 +475,7 @@
         jumboMode="true"
         optimize="false"
         revision="23.0.3"
-        sha1="d7ddc8a0a9eda817bb142e2e05bb039d1af49aa1">
+        sha1="62814ed96ecfc8fff782c4f70c0ca1793f2238c7">
         <dex dex="/Users/bigstone/workspace/android/thalesDemo/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run_cda8233f7db643d1446ef7c5d909d2336f8bde5d/classes.dex" />
     </item>
     <item
