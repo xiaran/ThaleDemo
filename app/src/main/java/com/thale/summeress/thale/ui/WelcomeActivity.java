@@ -22,6 +22,8 @@ import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.baidu.android.pushservice.PushConstants;
+import com.baidu.android.pushservice.PushManager;
 import com.thale.summeress.thale.R;
 import com.thale.summeress.thale.network.GeocodeInfo;
 import com.thale.summeress.thale.network.StationInfo;
@@ -57,10 +59,16 @@ public class WelcomeActivity extends Activity {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate");
         setContentView(R.layout.activity_welcome);
+//        PushManager.startWork(getApplicationContext(), PushConstants.LOGIN_TYPE_API_KEY,"WQvrIj2UDb14NjTfhTY9bAGZ");
+        PushManager.startWork(getApplicationContext(), PushConstants.LOGIN_TYPE_API_KEY,"oIPrqb22PmGu26Isub24NAQh");
         init();
+
+
     }
 
     private void init(){
+        stationName = "";
+        geocodeName = "";
         mLocation = new Location("0,0");
         mHandler = new IncomingHandler();
         context = WelcomeActivity.this;
@@ -152,6 +160,9 @@ public class WelcomeActivity extends Activity {
                 });
             }else {
                 try {
+                    editor.putString(context.getString(R.string.station_name), stationName);
+                    editor.putString(context.getString(R.string.geocode_name), geocodeName);
+                    editor.commit();
                     Thread.sleep(1500);
                 } catch (InterruptedException e) {
                 }

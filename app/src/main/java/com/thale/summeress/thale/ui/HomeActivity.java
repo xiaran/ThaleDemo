@@ -72,6 +72,8 @@ public class HomeActivity extends Activity implements View.OnClickListener {
         Log.d(TAG, "onCreate");
         setContentView(R.layout.activity_home);
 
+        stationName = "";
+        geocodeName = "";
         mLocation = new Location("0,0");
         result = checkPlayServices(this);
         mHandler = new IncomingHandler();
@@ -340,7 +342,6 @@ public class HomeActivity extends Activity implements View.OnClickListener {
                                 Log.i(TAG, "onSuccess");
                                 Log.i(TAG, "geocodeName " + result);
                                 geocodeName = result;
-                                editor.putString(context.getString(R.string.current_location), curLocation);
                                 editor.putString(context.getString(R.string.station_name), stationName);
                                 editor.putString(context.getString(R.string.geocode_name), geocodeName);
                                 editor.commit();
@@ -348,6 +349,11 @@ public class HomeActivity extends Activity implements View.OnClickListener {
                         });
                     }
                 });
+            }
+            else{
+                editor.putString(context.getString(R.string.station_name), stationName);
+                editor.putString(context.getString(R.string.geocode_name), geocodeName);
+                editor.commit();
             }
         }
     }

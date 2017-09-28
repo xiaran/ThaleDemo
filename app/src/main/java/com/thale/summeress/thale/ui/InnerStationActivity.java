@@ -21,6 +21,10 @@ import com.thale.summeress.thale.model.Point;
 import com.thale.summeress.thale.model.Segment;
 import com.thale.summeress.thale.tools.ScaleImageView;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -68,7 +72,7 @@ public class InnerStationActivity extends Activity implements View.OnClickListen
     public Point ATM_China;
     public Point ATM_Hang;
 
-    public ArrayList<Point> RECT;
+    public ArrayList<Point> Marker;
     public ArrayList<Point> EXIT;
     public ArrayList<Point> FACILITY;
 //    public Map<String, ArrayList<Integer>> TABLE;
@@ -92,55 +96,21 @@ public class InnerStationActivity extends Activity implements View.OnClickListen
         editor = sharedPreferences.edit();
 
         route = new LinkedList<>();
+        Marker = new ArrayList<>();
 
-        curPos = new Point(1016, 369);
-
-        EXIT_A = new Point(813, 295);
-        EXIT_B = new Point(281, 283);
-        EXIT_C = new Point(799, 388);
-        EXIT_D = new Point(1375, 508);
-        EXIT_E = new Point(1440, 527);
-
-//        topLeft = new Point(862, 318);
-//        topRight = new Point(1344, 363);
-//        bottomLeft = new Point(807, 380);
-//        bottomRight = new Point(1292, 485);
-
-        Tourist_Service = new Point(182, 220);
-        Lost = new Point(220, 188);
-        Police = new Point(267, 178);
-        Eleven = new Point(1073, 312);
-        A_XIN_WU = new Point(1397, 329);
-        Customer_Service = new Point(1296, 340);
-        ATM_China = new Point(1257, 318);
-        ATM_Hang = new Point(757, 283);
-
-
-//        RECT = new ArrayList<Point>(){{
-//            add(topLeft);
-//            add(topRight);
-//            add(bottomLeft);
-//            add(bottomRight);
-//        }};
-
-        EXIT = new ArrayList<Point>(){{
-            add(EXIT_A);
-            add(EXIT_B);
-            add(EXIT_C);
-            add(EXIT_D);
-            add(EXIT_E);
-        }};
-
-        FACILITY = new ArrayList<Point>(){{
-            add(Tourist_Service);
-            add(Lost);
-            add(Police);
-            add(Eleven);
-            add(A_XIN_WU);
-            add(Customer_Service);
-            add(ATM_China);
-            add(ATM_Hang);
-        }};
+        InputStream is = getResources().openRawResource(R.raw.marker);
+        String line;
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        try {
+            while ((line = reader.readLine()) != null) {
+                String[] coordinates = line.split(",");
+                Point marker = new Point(Float.parseFloat(coordinates[1]), Float.parseFloat(coordinates[2]));
+                Marker.add(marker);
+            }
+        } catch (IOException e){}
+        curPos = Marker.get(5);
+        EXIT = new ArrayList<>(Marker.subList(0, 5));
+        FACILITY = new ArrayList<>(Marker.subList(6, Marker.size()));
 
 //        TABLE = new HashMap<String, ArrayList<Integer>>(){{
 //            put("A", new ArrayList<Integer>(){{add(1);add(3);add(2);}});
@@ -229,7 +199,7 @@ public class InnerStationActivity extends Activity implements View.OnClickListen
             route = findRoute(InnerStationActivity.this, curPos, exitPoint);
             mPaint.setColor(Color.RED);
             mPaint.setStrokeWidth(3);
-            mCanvas.drawCircle(exitPoint.getX(), exitPoint.getY(), 25, mPaint);
+            mCanvas.drawCircle(exitPoint.getX(), exitPoint.getY(), 15, mPaint);
         }
 
         for (Segment s : route) {
